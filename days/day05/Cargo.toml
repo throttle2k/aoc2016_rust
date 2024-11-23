@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 common.workspace = true
+md5 = "0.7.0"
 
 [dev-dependencies]
 parameterized.workspace = true
