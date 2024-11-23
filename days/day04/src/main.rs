@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{char, collections::HashMap};
 
 use common::read_input;
 
@@ -29,6 +29,22 @@ impl From<&str> for Room {
             checksum,
         }
     }
+}
+
+fn shift_char(c: char, n: u32) -> char {
+    if n == 0 {
+        return c;
+    }
+
+    if c == '-' {
+        return ' ';
+    }
+
+    let new_c = match c {
+        'z' => 'a',
+        c => char::from_u32(c as u32 + 1).unwrap(),
+    };
+    shift_char(new_c, n - 1)
 }
 
 impl Room {
@@ -72,6 +88,13 @@ impl Room {
     fn is_real(&self) -> bool {
         self.checksum == self.calculate_checksum()
     }
+
+    fn decode_name(&self) -> String {
+        self.encrypted_name
+            .chars()
+            .map(|c| shift_char(c, self.id))
+            .collect::<String>()
+    }
 }
 
 fn main() {
@@ -88,6 +111,13 @@ fn main() {
         })
         .sum::<u32>();
     println!("Part 1 = {}", id_sum);
+    let room = input
+        .lines()
+        .map(|l| Room::from(l))
+        .filter(|r| r.is_real())
+        .find(|r| r.decode_name() == "northpole object storage")
+        .unwrap();
+    println!("Part 2 = {}", room.id);
 }
 
 #[cfg(test)]
@@ -123,5 +153,12 @@ totally-real-room-200[decoy]"#;
             })
             .collect::<Vec<_>>();
         assert_eq!(rooms.iter().map(|r| r.id).sum::<u32>(), 1514);
+    }
+
+    #[test]
+    fn part2() {
+        let input = "qzmt-zixmtkozy-ivhz-343[zimtq]";
+        let room = Room::from(input);
+        assert_eq!(room.decode_name(), "very encrypted name".to_string());
     }
 }
