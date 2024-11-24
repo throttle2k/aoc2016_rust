@@ -17,8 +17,26 @@ fn most_frequent_char(input: &str) -> char {
     **frequencies.get(max_freq).unwrap()
 }
 
-fn decode(input: Vec<String>) -> String {
-    input.iter().map(|s| most_frequent_char(s)).collect()
+fn least_frequent_char(input: &str) -> char {
+    let frequencies = input
+        .chars()
+        .fold(HashMap::<char, usize>::new(), |mut frequencies, c| {
+            frequencies.entry(c).and_modify(|f| *f += 1).or_insert(1);
+            frequencies
+        });
+    let frequencies = frequencies
+        .iter()
+        .map(|(k, v)| (v, k))
+        .collect::<HashMap<&usize, &char>>();
+    let max_freq = frequencies.keys().min().unwrap();
+    **frequencies.get(max_freq).unwrap()
+}
+
+fn decode<T>(input: Vec<String>, freq_fun: T) -> String
+where
+    T: Fn(&str) -> char,
+{
+    input.iter().map(|s| freq_fun(s)).collect()
 }
 
 fn transpose_strings(input: &[&str]) -> Vec<String> {
@@ -34,7 +52,8 @@ fn main() {
     let input = read_input("day06.txt");
     let input = input.trim().lines().map(|l| l.trim()).collect::<Vec<_>>();
     let input = transpose_strings(&input);
-    println!("Part 1 = {}", decode(input));
+    println!("Part 1 = {}", decode(input.clone(), most_frequent_char));
+    println!("Part 2 = {}", decode(input, least_frequent_char));
 }
 
 #[cfg(test)]
@@ -61,6 +80,29 @@ dvrsen
 enarar"#;
         let input = input.trim().lines().map(|l| l.trim()).collect::<Vec<_>>();
         let input = transpose_strings(&input);
-        assert_eq!(decode(input), "easter".to_string());
+        assert_eq!(decode(input, most_frequent_char), "easter".to_string());
+    }
+
+    #[test]
+    fn part2() {
+        let input = r#"eedadn
+drvtee
+eandsr
+raavrd
+atevrs
+tsrnev
+sdttsa
+rasrtv
+nssdts
+ntnada
+svetve
+tesnvt
+vntsnd
+vrdear
+dvrsen
+enarar"#;
+        let input = input.trim().lines().map(|l| l.trim()).collect::<Vec<_>>();
+        let input = transpose_strings(&input);
+        assert_eq!(decode(input, least_frequent_char), "advent".to_string());
     }
 }
