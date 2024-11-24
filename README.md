@@ -8,3 +8,4 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 4: Security Through Obscurity
 - [x] Day 5: How About a Nice Game of Chess?
 - [x] Day 6: Signals and Noise
+- [ ] Day 7: Internet Protocol Version 7
