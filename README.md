@@ -9,4 +9,4 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 5: How About a Nice Game of Chess?
 - [x] Day 6: Signals and Noise
 - [x] Day 7: Internet Protocol Version 7
-- [ ] Day 8: Two-Factor Authentication
+- [x] Day 8: Two-Factor Authentication
