@@ -124,6 +124,7 @@ fn main() {
         .collect::<Vec<_>>();
     instructions.into_iter().for_each(|i| display.apply(i));
     println!("Part 1 = {}", display.count_lit_pixels());
+    println!("Part 2 = \n{}", display.to_string());
 }
 
 #[cfg(test)]
