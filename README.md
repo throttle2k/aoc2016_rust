@@ -10,4 +10,4 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 6: Signals and Noise
 - [x] Day 7: Internet Protocol Version 7
 - [x] Day 8: Two-Factor Authentication
-- [ ] Day 9: Explosives in Cyberspace
+- [x] Day 9: Explosives in Cyberspace
