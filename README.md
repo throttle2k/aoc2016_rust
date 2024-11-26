@@ -11,4 +11,4 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 7: Internet Protocol Version 7
 - [x] Day 8: Two-Factor Authentication
 - [x] Day 9: Explosives in Cyberspace
-- [ ] Day 10: Balance Bots
+- [x] Day 10: Balance Bots

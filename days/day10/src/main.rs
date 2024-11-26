@@ -158,6 +158,12 @@ impl Factory {
             .unwrap()
             .id
     }
+
+    fn output_multiplier(&self, ids: Vec<usize>) -> u32 {
+        ids.iter().fold(1, |acc, id| {
+            acc * self.outputs.iter().find(|out| out.id == *id).unwrap().value
+        })
+    }
 }
 
 fn main() {
@@ -165,6 +171,7 @@ fn main() {
     let mut factory = Factory::from(input.as_str());
     factory.process();
     println!("Part 1 = {}", factory.find_processor(61, 17));
+    println!("Part 2 = {}", factory.output_multiplier(vec![0, 1, 2]));
 }
 
 #[cfg(test)]
