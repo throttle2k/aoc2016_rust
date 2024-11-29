@@ -14,4 +14,4 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 10: Balance Bots
 - [x] Day 11: Radioisotope Thermoelectric Generators
 - [x] Day 12: Leonardo's Monorail
-- [ ] Day 13: A Maze of Twisty Little Cubicles
+- [x] Day 13: A Maze of Twisty Little Cubicles
