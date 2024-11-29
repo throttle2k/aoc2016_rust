@@ -340,7 +340,7 @@ impl Facility {
             .sum()
     }
 
-    fn count_steps_a_star(&self) -> usize {
+    fn count_steps(&self) -> usize {
         let mut visited = vec![];
         let mut next_states = vec![(self.clone(), 0)];
         let mut max = 0;
@@ -372,12 +372,12 @@ impl Facility {
 fn main() {
     let input = read_input("day11.txt");
     let mut facility = Facility::from(input.as_str());
-    println!("Part 1 = {}", facility.count_steps_a_star());
+    println!("Part 1 = {}", facility.count_steps());
     facility.add_item(Item::Generator(Material::Elerium), 0);
     facility.add_item(Item::Microchip(Material::Elerium), 0);
     facility.add_item(Item::Generator(Material::Dilithium), 0);
     facility.add_item(Item::Microchip(Material::Dilithium), 0);
-    println!("Part 2 = {}", facility.count_steps_a_star());
+    println!("Part 2 = {}", facility.count_steps());
 }
 
 #[cfg(test)]
@@ -391,7 +391,7 @@ The second floor contains nothing relevant.
 The third floor contains nothing relevant.
 The fourth floor contains nothing relevant."#;
         let facility = Facility::from(input);
-        assert_eq!(facility.count_steps_a_star(), 3);
+        assert_eq!(facility.count_steps(), 3);
     }
 
     #[test]
@@ -401,7 +401,7 @@ The second floor contains nothing relevant.
 The third floor contains nothing relevant.
 The fourth floor contains nothing relevant."#;
         let facility = Facility::from(input);
-        assert_eq!(facility.count_steps_a_star(), 3);
+        assert_eq!(facility.count_steps(), 3);
     }
 
     #[test]
@@ -411,7 +411,7 @@ The second floor contains a hydrogen-compatible microchip.
 The third floor contains nothing relevant.
 The fourth floor contains nothing relevant."#;
         let facility = Facility::from(input);
-        assert_eq!(facility.count_steps_a_star(), 3);
+        assert_eq!(facility.count_steps(), 3);
     }
 
     #[test]
@@ -421,6 +421,6 @@ The fourth floor contains nothing relevant."#;
     The third floor contains a lithium generator.
     The fourth floor contains nothing relevant."#;
         let facility = Facility::from(input);
-        assert_eq!(facility.count_steps_a_star(), 11);
+        assert_eq!(facility.count_steps(), 11);
     }
 }
