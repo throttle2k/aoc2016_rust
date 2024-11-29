@@ -82,6 +82,10 @@ impl From<&str> for Computer {
 }
 
 impl Computer {
+    fn set_register(&mut self, r: char, v: i32) {
+        self.registers.entry(r).and_modify(|value| *value = v);
+    }
+
     fn execute(&mut self) {
         while let Some(instruction) = self.instructions.get(self.cursor as usize) {
             match instruction {
@@ -137,6 +141,10 @@ fn main() {
     let mut computer = Computer::from(input.as_str());
     computer.execute();
     println!("Part 1 = {}", *computer.registers.get(&'a').unwrap());
+    let mut computer = Computer::from(input.as_str());
+    computer.set_register('c', 1);
+    computer.execute();
+    println!("Part 2 = {}", *computer.registers.get(&'a').unwrap());
 }
 
 #[cfg(test)]
