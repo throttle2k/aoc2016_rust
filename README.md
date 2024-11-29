@@ -15,3 +15,4 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 11: Radioisotope Thermoelectric Generators
 - [x] Day 12: Leonardo's Monorail
 - [x] Day 13: A Maze of Twisty Little Cubicles
+- [ ] Day 14: One-Time Pad
