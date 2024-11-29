@@ -13,4 +13,5 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 9: Explosives in Cyberspace
 - [x] Day 10: Balance Bots
 - [x] Day 11: Radioisotope Thermoelectric Generators
-- [ ] Day 12: Leonardo's Monorail
+- [x] Day 12: Leonardo's Monorail
+- [ ] Day 13: A Maze of Twisty Little Cubicles
