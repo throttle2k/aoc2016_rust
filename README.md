@@ -17,3 +17,4 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 13: A Maze of Twisty Little Cubicles
 - [x] Day 14: One-Time Pad
 - [x] Day 15: Timing is Everything
+- [ ] Day 16: Dragon Checksum
