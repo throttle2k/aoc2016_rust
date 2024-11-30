@@ -1,6 +1,6 @@
 use common::read_input;
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 struct Disc {
     id: usize,
     num_positions: usize,
@@ -53,7 +53,7 @@ impl Disc {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 struct Machine {
     discs: Vec<Disc>,
 }
@@ -70,6 +70,15 @@ impl From<&str> for Machine {
 }
 
 impl Machine {
+    fn add_disc(&mut self, num_positions: usize, position: usize) {
+        let disc = Disc {
+            id: self.discs.len() + 1,
+            num_positions,
+            position,
+        };
+        self.discs.push(disc);
+    }
+
     fn tick(&self) -> Self {
         let discs = self
             .discs
@@ -104,6 +113,9 @@ fn main() {
     let input = read_input("day15.txt");
     let machine = Machine::from(input.as_str());
     println!("Part 1 = {}", machine.seconds_for_capsule());
+    let mut machine = Machine::from(input.as_str());
+    machine.add_disc(11, 0);
+    println!("Part 2 = {}", machine.seconds_for_capsule());
 }
 
 #[cfg(test)]
