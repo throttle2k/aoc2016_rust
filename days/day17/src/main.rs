@@ -105,7 +105,6 @@ fn find_shortest_path(input: &str) -> String {
     queue.push(start);
     while !queue.is_empty() {
         let cell = queue.remove(0);
-        // println!("{:?}", cell);
         if cell.current_position == (3, 3) {
             let result = cell.path.chars().skip_while(|c| c.is_lowercase()).collect();
             return result;
@@ -117,8 +116,32 @@ fn find_shortest_path(input: &str) -> String {
     String::new()
 }
 
+fn find_longest_path(input: &str) -> usize {
+    let mut queue = vec![];
+    let start = Cell::from(input);
+    queue.push(start);
+    let mut paths = vec![];
+    while !queue.is_empty() {
+        let cell = queue.remove(0);
+        if cell.current_position == (3, 3) {
+            let result = cell
+                .path
+                .chars()
+                .skip_while(|c| c.is_lowercase())
+                .collect::<String>();
+            paths.push(result);
+            continue;
+        };
+        cell.get_valid_movements().iter().for_each(|c| {
+            queue.push(cell.movement(*c));
+        });
+    }
+    paths.iter().map(|s| s.len()).max().unwrap()
+}
+
 fn main() {
     println!("Part 1 = {}", find_shortest_path("dmypynyp"));
+    println!("Part 2 = {}", find_longest_path("dmypynyp"));
 }
 
 #[cfg(test)]
@@ -141,5 +164,13 @@ mod day17_tests {
     )]
     fn part1(input: &str, expected: &str) {
         assert_eq!(find_shortest_path(input), expected);
+    }
+
+    #[parameterized(
+        input = { "ihgpwlah", "kglvqrro", "ulqzkmiv" },
+        expected = { 370, 492, 830 }
+    )]
+    fn part2(input: &str, expected: usize) {
+        assert_eq!(find_longest_path(input), expected);
     }
 }
