@@ -19,4 +19,4 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 15: Timing is Everything
 - [x] Day 16: Dragon Checksum
 - [x] Day 17: Two Steps Forward
-- [ ] Day 18: Like a Rogue
+- [x] Day 18: Like a Rogue
