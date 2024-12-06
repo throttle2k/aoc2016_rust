@@ -20,4 +20,4 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 16: Dragon Checksum
 - [x] Day 17: Two Steps Forward
 - [x] Day 18: Like a Rogue
-- [ ] Day 19: An Elephant Named Joseph
+- [x] Day 19: An Elephant Named Joseph

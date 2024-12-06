@@ -38,11 +38,29 @@ impl Circle {
         }
         circle.elves.get(0).unwrap().clone()
     }
+
+    fn solve_part_2(num_elves: usize) -> usize {
+        let mut mst = num_elves;
+        let mut power_of_3 = 1;
+        while mst > 2 {
+            mst /= 3;
+            power_of_3 *= 3;
+        }
+
+        if power_of_3 == num_elves {
+            num_elves
+        } else if mst == 1 {
+            num_elves - power_of_3
+        } else {
+            num_elves * 2 - power_of_3 * 3
+        }
+    }
 }
 
 fn main() {
     let circle = Circle::new(3001330);
     println!("Part 1 = {}", circle.play().0);
+    println!("Part 2 = {}", Circle::solve_part_2(3001330));
 }
 
 #[cfg(test)]
@@ -53,5 +71,10 @@ mod day19_tests {
     fn part1() {
         let circle = Circle::new(5);
         assert_eq!(circle.play().0, 3);
+    }
+
+    #[test]
+    fn part2() {
+        assert_eq!(Circle::solve_part_2(5), 2);
     }
 }
