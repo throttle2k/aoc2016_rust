@@ -23,3 +23,4 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 19: An Elephant Named Joseph
 - [x] Day 20: Firewall Rules
 - [x] Day 21: Scrambled Letters and Hash
+- [ ] Day 22: Grid Computing
