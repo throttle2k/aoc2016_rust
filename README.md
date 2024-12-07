@@ -22,3 +22,4 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 18: Like a Rogue
 - [x] Day 19: An Elephant Named Joseph
 - [x] Day 20: Firewall Rules
+- [ ] Day 21: Scrambled Letters and Hash
