@@ -27,7 +27,7 @@ fn str_to_char(s: &str) -> char {
     s.chars().nth(0).unwrap()
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 enum Instruction {
     Cpy(RegisterOrValue, RegisterOrValue),
     Inc(char),
@@ -76,6 +76,46 @@ impl From<&str> for Computer {
     }
 }
 
+fn process_multiply(instructions: &[Instruction]) -> Option<(char, char, char, char)> {
+    let cpy =
+        if let Instruction::Cpy(RegisterOrValue::Register(r1), RegisterOrValue::Register(r2)) =
+            instructions[0]
+        {
+            (r1, r2)
+        } else {
+            return None;
+        };
+    let inc = if let Instruction::Inc(r) = instructions[1] {
+        r
+    } else {
+        return None;
+    };
+    let dec1 = if let Instruction::Dec(r) = instructions[2] {
+        r
+    } else {
+        return None;
+    };
+    let jnz1 = if let Instruction::Jnz(RegisterOrValue::Register(r), _) = instructions[3] {
+        r
+    } else {
+        return None;
+    };
+    let dec2 = if let Instruction::Dec(r) = instructions[4] {
+        r
+    } else {
+        return None;
+    };
+    let jnz2 = if let Instruction::Jnz(RegisterOrValue::Register(r), _) = instructions[5] {
+        r
+    } else {
+        return None;
+    };
+    if !(cpy.1 == dec1 && cpy.1 == jnz1 && dec2 == jnz2) {
+        return None;
+    };
+    Some((cpy.0, dec2, cpy.1, inc))
+}
+
 impl Computer {
     fn set_register(&mut self, r: char, v: i32) {
         self.registers.entry(r).and_modify(|value| *value = v);
@@ -83,78 +123,90 @@ impl Computer {
 
     fn execute(&mut self) {
         while let Some(instruction) = self.instructions.get(self.cursor as usize) {
-            println!();
-            println!("{:?}", self.instructions);
-            println!("{:?}", self.registers);
-            println!("{:?}", &instruction);
-            match instruction {
-                Instruction::Cpy(v, r) => {
-                    if let RegisterOrValue::Register(r) = &r {
-                        match v {
-                            RegisterOrValue::Register(reg) => {
-                                let reg_value = self.registers.get(reg).unwrap().clone();
-                                self.registers
+            let process_multiply = if self.cursor as usize + 6 < self.instructions.len() {
+                process_multiply(&self.instructions[self.cursor as usize..self.cursor as usize + 6])
+            } else {
+                None
+            };
+            if let Some((r1, r2, r3, rd)) = process_multiply {
+                let mult1 = self.registers.get(&r1).unwrap().clone();
+                let mult2 = self.registers.get(&r2).unwrap().clone();
+                self.registers
+                    .entry(rd)
+                    .and_modify(|value| *value += mult1 * mult2);
+                self.registers.entry(r2).and_modify(|value| *value = 0);
+                self.registers.entry(r3).and_modify(|value| *value = 0);
+                self.cursor += 6;
+            } else {
+                match instruction {
+                    Instruction::Cpy(v, r) => {
+                        if let RegisterOrValue::Register(r) = &r {
+                            match v {
+                                RegisterOrValue::Register(reg) => {
+                                    let reg_value = self.registers.get(reg).unwrap().clone();
+                                    self.registers
+                                        .entry(*r)
+                                        .and_modify(|value| *value = reg_value)
+                                        .or_insert(reg_value)
+                                }
+                                RegisterOrValue::Value(val) => self
+                                    .registers
                                     .entry(*r)
-                                    .and_modify(|value| *value = reg_value)
-                                    .or_insert(reg_value)
-                            }
-                            RegisterOrValue::Value(val) => self
-                                .registers
-                                .entry(*r)
-                                .and_modify(|value| *value = *val)
-                                .or_insert(*val),
-                        };
-                    }
-                    self.cursor += 1;
-                }
-                Instruction::Inc(r) => {
-                    self.registers
-                        .entry(*r)
-                        .and_modify(|value| *value += 1)
-                        .or_insert(1);
-                    self.cursor += 1;
-                }
-                Instruction::Dec(r) => {
-                    self.registers
-                        .entry(*r)
-                        .and_modify(|value| *value -= 1)
-                        .or_insert(-1);
-                    self.cursor += 1;
-                }
-                Instruction::Jnz(v, c) => match c {
-                    RegisterOrValue::Value(c) => {
-                        let must_jump = match v {
-                            RegisterOrValue::Register(reg) => {
-                                *self.registers.get(reg).unwrap() != 0
-                            }
-                            RegisterOrValue::Value(val) => *val != 0,
-                        };
-                        if must_jump {
-                            self.cursor += c;
-                        } else {
-                            self.cursor += 1;
+                                    .and_modify(|value| *value = *val)
+                                    .or_insert(*val),
+                            };
                         }
+                        self.cursor += 1;
                     }
-                    RegisterOrValue::Register(r) => {
-                        let must_jump = match v {
-                            RegisterOrValue::Register(reg) => {
-                                *self.registers.get(reg).unwrap() != 0
+                    Instruction::Inc(r) => {
+                        self.registers
+                            .entry(*r)
+                            .and_modify(|value| *value += 1)
+                            .or_insert(1);
+                        self.cursor += 1;
+                    }
+                    Instruction::Dec(r) => {
+                        self.registers
+                            .entry(*r)
+                            .and_modify(|value| *value -= 1)
+                            .or_insert(-1);
+                        self.cursor += 1;
+                    }
+                    Instruction::Jnz(v, c) => match c {
+                        RegisterOrValue::Value(c) => {
+                            let must_jump = match v {
+                                RegisterOrValue::Register(reg) => {
+                                    *self.registers.get(reg).unwrap() != 0
+                                }
+                                RegisterOrValue::Value(val) => *val != 0,
+                            };
+                            if must_jump {
+                                self.cursor += c;
+                            } else {
+                                self.cursor += 1;
                             }
-                            RegisterOrValue::Value(val) => *val != 0,
-                        };
-                        if must_jump {
-                            self.cursor += self.registers.get(r).unwrap();
-                        } else {
-                            self.cursor += 1;
                         }
-                    }
-                },
-                Instruction::Tgl(r) => {
-                    if let Some(pos) = self.registers.get(r) {
-                        let pos = pos + self.cursor;
-                        if pos < self.instructions.len() as i32 {
-                            let new_instruction =
-                                if let Some(instruction) = self.instructions.get(pos as usize) {
+                        RegisterOrValue::Register(r) => {
+                            let must_jump = match v {
+                                RegisterOrValue::Register(reg) => {
+                                    *self.registers.get(reg).unwrap() != 0
+                                }
+                                RegisterOrValue::Value(val) => *val != 0,
+                            };
+                            if must_jump {
+                                self.cursor += self.registers.get(r).unwrap();
+                            } else {
+                                self.cursor += 1;
+                            }
+                        }
+                    },
+                    Instruction::Tgl(r) => {
+                        if let Some(pos) = self.registers.get(r) {
+                            let pos = pos + self.cursor;
+                            if pos < self.instructions.len() as i32 {
+                                let new_instruction = if let Some(instruction) =
+                                    self.instructions.get(pos as usize)
+                                {
                                     match instruction {
                                         Instruction::Inc(r) => Some(Instruction::Dec(*r)),
                                         Instruction::Dec(r) => Some(Instruction::Inc(*r)),
@@ -169,24 +221,30 @@ impl Computer {
                                 } else {
                                     None
                                 };
-                            if let Some(instruction) = new_instruction {
-                                self.instructions.remove(pos as usize);
-                                self.instructions.insert(pos as usize, instruction);
+                                if let Some(instruction) = new_instruction {
+                                    self.instructions.remove(pos as usize);
+                                    self.instructions.insert(pos as usize, instruction);
+                                }
                             }
                         }
+                        self.cursor += 1;
                     }
-                    self.cursor += 1;
                 }
             };
         }
     }
 }
+
 fn main() {
     let input = read_input("day23.txt");
     let mut computer = Computer::from(input.as_str());
     computer.set_register('a', 7);
     computer.execute();
     println!("Part 1 = {}", *computer.registers.get(&'a').unwrap());
+    let mut computer = Computer::from(input.as_str());
+    computer.set_register('a', 12);
+    computer.execute();
+    println!("Part 2 = {}", *computer.registers.get(&'a').unwrap());
 }
 
 #[cfg(test)]
