@@ -24,4 +24,5 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 20: Firewall Rules
 - [x] Day 21: Scrambled Letters and Hash
 - [x] Day 22: Grid Computing
-- [ ] Day 23: Safe Cracking
+- [x] Day 23: Safe Cracking
+- [ ] Day 24: Air Duct Spelunking
