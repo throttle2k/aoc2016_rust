@@ -26,3 +26,4 @@ My solutions for Advent of Code 2016 in Rust
 - [x] Day 22: Grid Computing
 - [x] Day 23: Safe Cracking
 - [x] Day 24: Air Duct Spelunking
+- [ ] Day 25: Clock Signal
