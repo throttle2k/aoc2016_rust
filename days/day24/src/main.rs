@@ -158,9 +158,14 @@ impl Maze {
         current: usize,
         n: usize,
         memo: &mut Vec<Vec<Option<usize>>>,
+        and_return: bool,
     ) -> usize {
         if mask == (1 << n) - 1 {
-            return 0;
+            if and_return {
+                return *self.cost.get(&(current, 0)).unwrap();
+            } else {
+                return 0;
+            }
         }
 
         if let Some(result) = memo[current][mask] {
@@ -173,7 +178,7 @@ impl Maze {
                 result = min(
                     result,
                     self.cost.get(&(current, i)).unwrap()
-                        + self.total_cost(mask | (1 << i), i, n, memo),
+                        + self.total_cost(mask | (1 << i), i, n, memo, and_return),
                 );
             }
         });
@@ -181,17 +186,18 @@ impl Maze {
         result
     }
 
-    fn tsp(&self) -> usize {
+    fn tsp(&self, and_return: bool) -> usize {
         let n = self.checkpoints.iter().max().unwrap() + 1;
         let mut memo: Vec<Vec<Option<usize>>> = vec![vec![None; 1 << n]; n];
-        self.total_cost(1, 0, n, &mut memo)
+        self.total_cost(1, 0, n, &mut memo, and_return)
     }
 }
 
 fn main() {
     let input = read_input("day24.txt");
     let maze = Maze::from(input.as_str());
-    println!("Part 1 = {}", maze.tsp());
+    println!("Part 1 = {}", maze.tsp(false));
+    println!("Part 2 = {}", maze.tsp(true));
 }
 
 #[cfg(test)]
@@ -223,6 +229,6 @@ mod day24_tests {
 #4.......3#
 ###########"#;
         let maze = Maze::from(input);
-        assert_eq!(maze.tsp(), 14);
+        assert_eq!(maze.tsp(false), 14);
     }
 }
